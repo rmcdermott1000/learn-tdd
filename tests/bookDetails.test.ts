@@ -56,6 +56,58 @@ describe('showBookDtls', () => {
         });
     });
 
+    it('should return return null for book when the book id is not a string', async () => {
+        // Mocking the Book model's findOne and populate methods
+        const id = {id: '12345'}
+
+        const mockFindOne = jest.fn().mockReturnValue({
+            populate: jest.fn().mockReturnThis(), // Allows method chaining
+            exec: jest.fn().mockResolvedValue(mockBook) // Resolves to your mock book
+        });
+        Book.findOne = mockFindOne;
+
+        // Mocking the BookInstance model's find and select methods
+        const mockFind = jest.fn().mockReturnValue({
+            select: jest.fn().mockReturnThis(), // Select is called here
+            exec: jest.fn().mockResolvedValue(mockCopies)
+        });
+        BookInstance.find = mockFind;
+
+        // Act
+        await showBookDtls(res as Response, id as unknown as string);
+
+        // Assert
+        expect(res.status).toHaveBeenCalledWith(404);
+        expect(res.send).toHaveBeenCalledWith('Book [object Object] not found');
+    });
+
+    it('should return return null for book instance when the book id is not a string', async () => {
+
+        const id = {id: '12345'}
+
+
+        // Mocking the Book model's findOne and populate methods
+        const mockFindOne = jest.fn().mockReturnValue({
+            populate: jest.fn().mockReturnThis(), // Allows method chaining
+            exec: jest.fn().mockResolvedValue(mockBook) // Resolves to your mock book
+        });
+        Book.findOne = mockFindOne;
+
+        // Mocking the BookInstance model's find and select methods
+        const mockFind = jest.fn().mockReturnValue({
+            select: jest.fn().mockReturnThis(), // Select is called here
+            exec: jest.fn().mockResolvedValue(mockCopies)
+        });
+        BookInstance.find = mockFind;
+
+        // Act
+        await showBookDtls(res as Response, id as unknown as string);
+
+        // Assert
+        expect(res.status).toHaveBeenCalledWith(404);
+        expect(res.send).toHaveBeenCalledWith('Book [object Object] not found');
+    });
+
     it('should return 404 if there book instance is null', async () => {
         const id = '12345';
         // Mocking the Book model's findOne method to throw an error
